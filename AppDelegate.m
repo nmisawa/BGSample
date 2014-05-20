@@ -39,18 +39,6 @@
     
     UIApplication* app = [UIApplication sharedApplication];
     
-    void (^handler)(void)  = ^{
-        // TODO 処理が10分過ぎても終わらない時に実行する処理を記述
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (bgTask != UIBackgroundTaskInvalid)
-            {
-                [app endBackgroundTask:bgTask];
-                bgTask = UIBackgroundTaskInvalid;
-            }
-        });
-    };
-    //
-    
     bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
         // Synchronize the cleanup call on the main thread in case
         // the task actually finishes at around the same time.
