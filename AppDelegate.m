@@ -37,14 +37,14 @@
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
-    UIApplication* app = [UIApplication sharedApplication];
     
-    bgTask = [app beginBackgroundTaskWithExpirationHandler:^{
+    bgTask = [application beginBackgroundTaskWithExpirationHandler:^{
         // Synchronize the cleanup call on the main thread in case
         // the task actually finishes at around the same time.
         dispatch_async(dispatch_get_main_queue(), ^{
             if (bgTask != UIBackgroundTaskInvalid)
             {
+                UIApplication* app = [UIApplication sharedApplication];
                 [app endBackgroundTask:bgTask];
                 bgTask = UIBackgroundTaskInvalid;
             }
@@ -52,20 +52,24 @@
         
     }];
     
-    //    bgTask = [application beginBackgroundTaskWithExpirationHandler:handler];
-    
     // Start the long-running task and return immediately.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         // TODO バックグラウンドで実行する処理を記述
+        while (1) {
+            NSLog(@"backgroundTimeRemaining: %0.f", [UIApplication sharedApplication].backgroundTimeRemaining);
+            sleep(1);
+        }
         
         // Synchronize the cleanup call on the main thread in case
         // the expiration handler is fired at the same time.
         dispatch_async(dispatch_get_main_queue(), ^{
             if (bgTask != UIBackgroundTaskInvalid)
             {
+                UIApplication* app = [UIApplication sharedApplication];
                 [app endBackgroundTask:bgTask];
                 bgTask = UIBackgroundTaskInvalid;
+                NSLog(@"バックグラウンド処理終了");
             }
         });
     });
